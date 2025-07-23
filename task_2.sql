@@ -1,7 +1,8 @@
-
+-- ALX Book Store Database Schema
+-- With exact FOREIGN KEY syntax as required
 USE alx_book_store;
 
--- Authors Table (prerequisite for books)
+-- Authors Table
 CREATE TABLE IF NOT EXISTS authors (
     author_id INT AUTO_INCREMENT PRIMARY KEY,
     author_name VARCHAR(100) NOT NULL,
@@ -21,8 +22,8 @@ CREATE TABLE IF NOT EXISTS books (
     FOREIGN KEY (author_id) REFERENCES authors(author_id)
 );
 
--- Customers Table (with all required fields)
-CREATE TABLE IF NOT EXISTS customers (
+-- Customers Table
+CREATE TABLE IF NOT EXISTS Customers (  -- Note: Capital 'C' as referenced
     customer_id INT AUTO_INCREMENT PRIMARY KEY,
     customer_name VARCHAR(215) NOT NULL,
     email VARCHAR(215) UNIQUE NOT NULL,
@@ -37,8 +38,8 @@ CREATE TABLE IF NOT EXISTS orders (
     customer_id INT NOT NULL,
     order_date DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
     total_amount DECIMAL(12,2) NOT NULL,
-    status ENUM('Pending', 'Processing', 'Shipped', 'Delivered') DEFAULT 'Pending',
-    FOREIGN KEY (customer_id) REFERENCES customers(customer_id)
+    status ENUM('Pending','Processing','Shipped','Delivered') DEFAULT 'Pending',
+    FOREIGN KEY (customer_id) REFERENCES Customers(customer_id)  -- Exact match
 );
 
 -- Order_Details Table
