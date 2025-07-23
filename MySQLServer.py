@@ -1,39 +1,43 @@
 #!/usr/bin/python3
 """
-ALX MySQL Database Creation Script using mysql.connector
+ALX-compliant MySQL Database Creation Script
+- Uses mysql.connector
+- No SELECT/SHOW statements
+- Proper exception handling
 """
 import mysql.connector
 from mysql.connector import Error
 import sys
 
 def create_database():
+    conn = None
     try:
         # Connect to MySQL server
         conn = mysql.connector.connect(
             host="localhost",
-            user=sys.argv[1],  # First argument: username
-            password=sys.argv[2]  # Second argument: password
+            user=sys.argv[1],
+            password=sys.argv[2]
         )
         
         cursor = conn.cursor()
         
-        # Create database if not exists
+        # Create database (IF NOT EXISTS prevents errors)
         cursor.execute("CREATE DATABASE IF NOT EXISTS alx_book_store")
+        conn.commit()
         print("Database 'alx_book_store' created successfully!")
         
-        # Verify creation
-        cursor.execute("SHOW DATABASES LIKE 'alx_book_store'")
-        result = cursor.fetchone()
-        if result:
-            print("✅ Verification: Database exists in MySQL!")
-        else:
-            print("❌ Database creation failed")
+        # Verify without SELECT/SHOW - attempt to use the database
+        try:
+            cursor.execute("USE alx_book_store")
+            print("✅ Verification: Database is accessible")
+        except Error as e:
+            print(f"❌ Verification failed: {e}")
             
     except Error as e:
-        print(f"Error: {e}")
+        print(f"🚨 Database error: {e}")
         
     finally:
-        if conn.is_connected():
+        if conn and conn.is_connected():
             cursor.close()
             conn.close()
 
