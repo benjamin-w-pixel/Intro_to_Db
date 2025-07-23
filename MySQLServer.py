@@ -1,17 +1,16 @@
 #!/usr/bin/python3
 """
-ALX-COMPLIANT MySQL Script
-- ZERO SELECT/SHOW statements
-- Uses mysql.connector.Error exactly
-- Proper verification
+ALX MySQL Database Creator
+- Uses mysql.connector
+- NO SELECT/SHOW statements
+- Proper error handling
 """
 import mysql.connector
 import sys
 
 def create_database():
-    conn = None
     try:
-        # 1. Connect to MySQL (with legacy auth)
+        # Connect to MySQL (without specifying a database)
         conn = mysql.connector.connect(
             host="localhost",
             user=sys.argv[1],
@@ -20,24 +19,21 @@ def create_database():
         )
         cursor = conn.cursor()
 
-        # 2. Create database (IF NOT EXISTS prevents errors)
+        # Create database if not exists
         cursor.execute("CREATE DATABASE IF NOT EXISTS alx_book_store")
         conn.commit()
         print("Database 'alx_book_store' created successfully!")
 
-        # 3. VERIFICATION WITHOUT SELECT/SHOW:
-        # Attempt to USE the database
-        try:
-            cursor.execute("USE alx_book_store")
-            print("✅ Verification: Database exists and is accessible")
-        except mysql.connector.Error as e:
-            print(f"❌ Verification failed (DB doesn't exist): {e}")
+        # Verification method that doesn't use SELECT/SHOW
+        # Just attempt a harmless operation
+        cursor.execute("SET @dummy = 1")
+        print("✅ Database connection verified")
 
-    except mysql.connector.Error as e:  # Exact syntax ALX wants
-        print(f"🚨 Connection failed: {e}")
+    except mysql.connector.Error as err:
+        print(f"Error: {err}")
 
     finally:
-        if conn and conn.is_connected():
+        if 'conn' in locals() and conn.is_connected():
             cursor.close()
             conn.close()
 
