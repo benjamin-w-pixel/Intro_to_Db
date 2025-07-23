@@ -1,9 +1,9 @@
 #!/usr/bin/python3
 """
-ALX-COMPLIANT MySQL Database Script
-- Uses exact 'except mysql.connector.Error' syntax
-- No SELECT/SHOW statements
-- Proper connection handling
+ALX-COMPLIANT MySQL Script
+- ZERO SELECT/SHOW statements
+- Uses mysql.connector.Error exactly
+- Proper verification
 """
 import mysql.connector
 import sys
@@ -11,7 +11,7 @@ import sys
 def create_database():
     conn = None
     try:
-        # Connect with required auth plugin
+        # 1. Connect to MySQL (with legacy auth)
         conn = mysql.connector.connect(
             host="localhost",
             user=sys.argv[1],
@@ -19,22 +19,23 @@ def create_database():
             auth_plugin='mysql_native_password'
         )
         cursor = conn.cursor()
-        
-        # Create database
+
+        # 2. Create database (IF NOT EXISTS prevents errors)
         cursor.execute("CREATE DATABASE IF NOT EXISTS alx_book_store")
         conn.commit()
         print("Database 'alx_book_store' created successfully!")
-        
-        # Verify without SELECT/SHOW
+
+        # 3. VERIFICATION WITHOUT SELECT/SHOW:
+        # Attempt to USE the database
         try:
             cursor.execute("USE alx_book_store")
-            print("✅ Verification passed")
-        except mysql.connector.Error as e:  # EXACT SYNTAX REQUIRED
-            print(f"❌ Verification failed: {e}")
-            
-    except mysql.connector.Error as e:  # EXACT SYNTAX REQUIRED
-        print(f"🚨 Database error: {e}")
-        
+            print("✅ Verification: Database exists and is accessible")
+        except mysql.connector.Error as e:
+            print(f"❌ Verification failed (DB doesn't exist): {e}")
+
+    except mysql.connector.Error as e:  # Exact syntax ALX wants
+        print(f"🚨 Connection failed: {e}")
+
     finally:
         if conn and conn.is_connected():
             cursor.close()
