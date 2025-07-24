@@ -1,10 +1,8 @@
--- task_4.sql
--- This script shows the full description of the books table without using DESCRIBE or EXPLAIN
 
 SELECT 
     COLUMN_NAME AS 'Field',
     COLUMN_TYPE AS 'Type',
-    IS_NULLABLE AS 'Null',
+    IF(IS_NULLABLE = 'YES', 'YES', 'NO') AS 'Null',
     COLUMN_KEY AS 'Key',
     COLUMN_DEFAULT AS 'Default',
     EXTRA AS 'Extra'
@@ -12,4 +10,6 @@ FROM
     INFORMATION_SCHEMA.COLUMNS
 WHERE 
     TABLE_SCHEMA = DATABASE()
-    AND TABLE_NAME = 'books';
+    AND TABLE_NAME = 'books'
+ORDER BY 
+    ORDINAL_POSITION;
